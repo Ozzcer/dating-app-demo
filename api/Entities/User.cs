@@ -1,6 +1,6 @@
-﻿namespace api;
+﻿namespace api.Entities;
 
-public class AppUser
+public class User
 {
   public int Id { get; set; }
   public string? Username { get; set; }
