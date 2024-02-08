@@ -25,8 +25,20 @@ public class AccountController(DataContext context) : BaseApiController
 
   }
 
+  [HttpPost("Login")]
+  public async Task<ActionResult<User>> Login(LoginDTO loginDTO)
+  {
+    var user = await context.Users.SingleOrDefaultAsync(user => user.Username.ToLower().Equals(loginDTO.Username.ToLower()));
+    if (user is null) return Unauthorized("Invalid user");
+    using var hmac = new HMACSHA512(user.PasswordSalt);
+    var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDTO.Password));
+    if (hash.SequenceEqual(user.PasswordHash)) return user;
+    else return Unauthorized("Invalid password");
+  }
+
   private async Task<bool> UserExists(string username)
   {
     return await context.Users.AnyAsync(user => user.Username!.ToLower().Equals(username.ToLower()));
   }
+
 }
