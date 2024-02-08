@@ -18,13 +18,7 @@ public class AccountController(DataContext context) : BaseApiController
     if (await UserExists(registerDTO.Username)) return BadRequest("Username already taken");
 
     using var hmac = new HMACSHA512();
-    var user = new User
-    {
-      Username = registerDTO.Username,
-      PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDTO.Password)),
-      PasswordSalt = hmac.Key,
-    };
-
+    var user = new User(registerDTO.Username, hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDTO.Password)), hmac.Key);
     context.Users.Add(user);
     await context.SaveChangesAsync();
     return user;
