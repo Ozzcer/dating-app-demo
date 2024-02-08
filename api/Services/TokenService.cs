@@ -9,7 +9,7 @@ namespace api.Services;
 
 public class TokenService(IConfiguration configuration) : ITokenService
 {
-  private readonly SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(configuration["key"] ?? throw new InvalidOperationException("Missing token security key.")));
+  private readonly SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(configuration["TokenKey"] ?? throw new InvalidOperationException("Missing token security key.")));
   public string CreateToken(User user)
   {
     var claims = new List<Claim>
